@@ -2,11 +2,10 @@ use mimalloc::MiMalloc;
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 mod merge;
-use merge::Aggregation;
 use polars::prelude::*;
 
 fn main() -> Result<()>{
-
+	println!("eh");
 	let segments_lazy_frame= 
 		LazyCsvReader::new("K:\\2021 Working form home\\DataPreparation\\03 Segmentation\\03.01 - LCC_network_05082020.csv".into())
 		.has_header(true)
@@ -31,8 +30,8 @@ fn main() -> Result<()>{
 		.has_header(true)
 		.finish()
 		.select(&[
-			//col("ROAD_NO").alias("road"),
-			//col("CWAY").alias("cway"),
+			col("ROAD_NO").alias("road"),
+			col("CWAY").alias("cway"),
 			col("DIRN").alias("dirn"),
 			//(col("ROAD_NO")+lit("_")+col("CWAY")).alias("road_cway"),
 			(cast(col("START_SLK"),DataType::Int32)*lit(1000)).alias("slk_from"),
@@ -82,17 +81,22 @@ fn main() -> Result<()>{
 	
 	let segments = segments_lazy_frame.collect()?;
 	let data = data_lazy_frame.collect()?;
+	
+	println!("{:?}",data);
 
-	let result = merge::keep_intervals(
+	let result = match merge::keep_intervals(
 		segments,
 		data,
-		vec!["road","cway"],
-		("slk_from","slk_to"),
+		vec!["road", "cway"],
+		("slk_from", "slk_to"),
 		vec![
 			merge::Column::new("deflection", None, DataType::Float32, merge::Aggregation::LengthWeightedAverage),
 			merge::Column::new("curvature", None, DataType::Float32, merge::Aggregation::LengthWeightedAverage)
 		]
-	);
+	){
+		Ok(res)=>res,
+		Err(x)=>return Err(x)
+	};
 
 
 	Ok(())
