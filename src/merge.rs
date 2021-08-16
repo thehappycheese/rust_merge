@@ -31,7 +31,7 @@ impl<'a> Column<'a> {
 
 
 
-pub fn on_intervals(
+pub fn keep_intervals(
     segments:DataFrame,
     data:DataFrame,
     join_left:Vec<&str>,

@@ -83,7 +83,7 @@ fn main() -> Result<()>{
 	let segments = segments_lazy_frame.collect()?;
 	let data = data_lazy_frame.collect()?;
 
-	let result = merge::on_intervals(
+	let result = merge::keep_intervals(
 		segments,
 		data,
 		vec!["road","cway"],
