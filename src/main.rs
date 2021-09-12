@@ -90,14 +90,15 @@ fn main() -> Result<()>{
 		vec!["road", "cway"],
 		("slk_from", "slk_to"),
 		vec![
-			merge::Column::new("deflection", None, DataType::Float32, merge::Aggregation::LengthWeightedAverage),
-			merge::Column::new("curvature", None, DataType::Float32, merge::Aggregation::LengthWeightedAverage)
+			merge::Column::new("deflection", None, merge::Aggregation::LengthWeightedAverage),
+			merge::Column::new("curvature", None, merge::Aggregation::LengthWeightedAverage)
 		]
 	){
 		Ok(res)=>res,
 		Err(x)=>return Err(x)
 	};
 
+	println!("{:?}",result.head(Some(100)));
 
 	Ok(())
 }
